@@ -16,6 +16,17 @@ def g():
     import hopsworks
     import pandas as pd
     from sklearn.neighbors import KNeighborsClassifier
+    from sklearn.svm import OneClassSVM
+    from sklearn.tree import DecisionTreeClassifier
+    from sklearn.ensemble import BaggingClassifier
+    from sklearn.ensemble import VotingClassifier
+    from sklearn.naive_bayes import MultinomialNB
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.svm import LinearSVC
+
+    from sklearn.tree import DecisionTreeClassifier
+    from sklearn.ensemble import BaggingClassifier
+    from sklearn.ensemble import AdaBoostClassifier
     from sklearn.metrics import accuracy_score
     from sklearn.metrics import confusion_matrix
     from sklearn.metrics import classification_report
@@ -47,21 +58,33 @@ def g():
     X_train, X_test, y_train, y_test = feature_view.train_test_split(0.2)
 
     # Train our model with the Scikit-learn K-nearest-neighbors algorithm using our features (X_train) and labels (y_train)
-    model = KNeighborsClassifier(n_neighbors=2)
+    #model = KNeighborsClassifier(n_neighbors=20)
+    #model.fit(X_train, y_train.values.ravel())
+    # BaggingClassifier
+    # model=BaggingClassifier(DecisionTreeClassifier(),max_samples=0.5,max_features=1.0,n_estimators=5)
+    # model.fit(X_train, y_train.values.ravel())
+    mnb = MultinomialNB().fit(X_train, y_train)
+    lr=LogisticRegression(max_iter=1000)
+    svm=LinearSVC(C=0.001)
+    adb = AdaBoostClassifier(DecisionTreeClassifier(min_samples_split=10,max_depth=4),n_estimators=15,learning_rate=0.001)
+    bc = BaggingClassifier(DecisionTreeClassifier(),max_samples=0.5,max_features=1.0,n_estimators=15)
+
+    model=VotingClassifier(estimators=[('mnb',mnb),('lr',lr),('bc',bc),('svm',svm),('adb', adb)],voting='hard')
     model.fit(X_train, y_train.values.ravel())
 
     # Evaluate model performance using the features from the test set (X_test)
     y_pred = model.predict(X_test)
-
+    print("Accuracy_score:",accuracy_score(y_test, y_pred))
     # Compare predictions (y_pred) with the labels in the test set (y_test)
     metrics = classification_report(y_test, y_pred, output_dict=True)
     results = confusion_matrix(y_test, y_pred)
-
+    print("score on test: "  + str(model.score(X_test, y_test)))
+    print("score on train: " + str(model.score(X_train, y_train)))
     # Create the confusion matrix as a figure, we will later store it as a PNG image file
-    df_cm = pd.DataFrame(results, ['True Survival', 'True Dead'],
-                         ['Pred Survival', 'Pred Dead'])
-    cm = sns.heatmap(df_cm, annot=True)
-    fig = cm.get_figure()
+    # df_cm = pd.DataFrame(results, ['True Survival', 'True Dead'],
+    #                      ['Pred Survival', 'Pred Dead'])
+    # cm = sns.heatmap(df_cm, annot=True)
+    # fig = cm.get_figure()
 
     # We will now upload our model to the Hopsworks Model Registry. First get an object for the model registry.
     mr = project.get_model_registry()
@@ -73,7 +96,7 @@ def g():
 
     # Save both our model and the confusion matrix to 'model_dir', whose contents will be uploaded to the model registry
     joblib.dump(model, model_dir + "/titan_model.pkl")
-    fig.savefig(model_dir + "/confusion_matrix.png")    
+    #fig.savefig(model_dir + "/confusion_matrix.png")    
 
 
     # Specify the schema of the model's input/output using the features (X_train) and labels (y_train)
