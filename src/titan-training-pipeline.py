@@ -1,7 +1,7 @@
 import os
 import modal
 
-LOCAL=True
+LOCAL=False
 
 if LOCAL == False:
    stub = modal.Stub()
@@ -44,12 +44,12 @@ def g():
     # The feature view is the input set of features for your model. The features can come from different feature groups.    
     # You can select features from different feature groups and join them together to create a feature view
     try: 
-        feature_view = fs.get_feature_view(name="titanic_modal", version=1)
+        feature_view = fs.get_feature_view(name="titanic_modal", version=3)
     except:
-        titan_fg = fs.get_feature_group(name="titanic_modal", version=1)
+        titan_fg = fs.get_feature_group(name="titanic_modal", version=3)
         query = titan_fg.select_all()
         feature_view = fs.create_feature_view(name="titanic_modal",
-                                          version=1,
+                                          version=3,
                                           description="Read from pre-processed Titanic dataset",
                                           labels=["Survived"],
                                           query=query)    
@@ -65,16 +65,21 @@ def g():
     # model.fit(X_train, y_train.values.ravel())
     mnb = MultinomialNB().fit(X_train, y_train)
     lr=LogisticRegression(max_iter=1000)
-    svm=LinearSVC(C=0.001)
+    svm=LinearSVC(C=0.0001)
     adb = AdaBoostClassifier(DecisionTreeClassifier(min_samples_split=10,max_depth=4),n_estimators=15,learning_rate=0.001)
     bc = BaggingClassifier(DecisionTreeClassifier(),max_samples=0.5,max_features=1.0,n_estimators=15)
 
     model=VotingClassifier(estimators=[('mnb',mnb),('lr',lr),('bc',bc),('svm',svm),('adb', adb)],voting='hard')
     model.fit(X_train, y_train.values.ravel())
-
+    #from PIL import Image
+    #import requests
     # Evaluate model performance using the features from the test set (X_test)
+    #res = model.predict(X_test)
+    #survivor_url = "https://raw.githubusercontent.com/Chaouo/Titanic_serverless_ML/main/image/"+ str(res[0]) + ".png"
+    #img = Image.open(requests.get(survivor_url, stream=True).raw)
+    #img.save("./test.png")
     y_pred = model.predict(X_test)
-    print("Accuracy_score:",accuracy_score(y_test, y_pred))
+    #print(y_pred)
     # Compare predictions (y_pred) with the labels in the test set (y_test)
     metrics = classification_report(y_test, y_pred, output_dict=True)
     results = confusion_matrix(y_test, y_pred)
