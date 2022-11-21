@@ -7,7 +7,7 @@ import pandas as pd
 project = hopsworks.login()
 fs = project.get_feature_store()
 
-titan_df = pd.read_csv("../data/out.csv")
+titan_df = pd.read_csv("https://raw.githubusercontent.com/Chaouo/Titanic_serverless_ML/main/data/out.csv")
 
 titan_fg = fs.get_or_create_feature_group(
     name="titanic_modal",
