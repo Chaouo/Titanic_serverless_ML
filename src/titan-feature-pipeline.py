@@ -11,7 +11,7 @@ titan_df = pd.read_csv("https://raw.githubusercontent.com/Chaouo/Titanic_serverl
 
 titan_fg = fs.get_or_create_feature_group(
     name="titanic_modal",
-    version=1,
+    version=3,
     primary_key=["Pclass","Sex","Age","Fare","Family"], 
     description="Titanic dataset")
 titan_fg.insert(titan_df, write_options={"wait_for_job" : False})
