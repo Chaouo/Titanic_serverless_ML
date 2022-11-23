@@ -21,4 +21,4 @@ It predicts if the synthetic passengers survived or not, and build a Gradio appl
 outcome, and a confusion matrix with historical prediction performance.
 
 
-![alt text] (https://github.com/Chaouo/Titanic_serverless_ML/blob/main/image/WechatIMG287.png)
+![Alt text](https://github.com/Chaouo/Titanic_serverless_ML/blob/main/image/WechatIMG287.png)
