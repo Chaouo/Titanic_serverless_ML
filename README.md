@@ -4,7 +4,7 @@ We implemented a serverless machine learning system for the Titanic data. In our
  
  
 
-## Source File Descriptions:
+## Source File Descriptions
 
 ### titan-feature-pipeline.py
 Insert features and labels into our serverless model. Specifically, we created our feature group with a specified name, version, primary key, etc. Then insert the titanic dataflow into our feature group.
