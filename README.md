@@ -19,3 +19,6 @@ It generates synthetic data at a proper cadence (in our case, it runs once per d
 ### titanic-batch-inference-pipeline-daily.py
 It predicts if the synthetic passengers survived or not, and build a Gradio application to show the most recent synthetic passenger prediction and
 outcome, and a confusion matrix with historical prediction performance.
+
+
+![alt text] (https://github.com/Chaouo/Titanic_serverless_ML/blob/main/image/WechatIMG287.png)
