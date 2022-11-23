@@ -23,6 +23,7 @@ outcome, and a confusion matrix with historical prediction performance.
 ## Hugging Face Spaces public URL
 
 https://huggingface.co/spaces/qisan/Titan
+
 https://huggingface.co/spaces/qisan/Titanic_monitor
 
 
